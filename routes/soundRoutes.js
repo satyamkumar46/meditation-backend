@@ -1,6 +1,6 @@
 import express from 'express'
 import multer from 'multer';
-import { createTrack, getTracks } from '../controllers/TrackControllers.js';
+import { createTrack, deleteCategory, getTracks, getTracksById } from '../controllers/TrackControllers.js';
 
 const router= express.Router();
 
@@ -13,5 +13,7 @@ const multiUpload= upload.fields([
 
 router.post("/",multiUpload, createTrack );
 router.get("/",getTracks);
+router.get("/category/id/:id",getTracksById);
+router.delete("/category/id/:id",deleteCategory);
 
 export default router;
