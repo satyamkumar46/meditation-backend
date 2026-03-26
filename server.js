@@ -16,8 +16,8 @@ app.get("/", (req, res) => {
   res.send("API is running 🚀");
 });
 
-app.use("/api/sounds", soundRoutes);
-app.use("/api/teachers", TeacherRoutes);
+app.use("/sounds", soundRoutes);
+app.use("/teachers", TeacherRoutes);
 
 const PORT= process.env.PORT || 3000;
 
