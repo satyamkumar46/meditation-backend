@@ -49,6 +49,27 @@ router.get("/", async (req, res) => {
   res.json(teachers);
 });
 
+router.get("/id/:id", async(req,res) =>{
+
+  try {
+    
+    const teacher= await Teacher.find({
+      id:req.params.id,
+    });
+
+    if (!teacher) {
+      return res.status(404).json({
+        message: "Category not found ❌",
+      });
+    }
+
+    res.json(teacher);
+
+  } catch (error) {
+    res.status(500).json({ error: err.message });
+  }
+})
+
 router.delete("/id/:id", async(req, res) =>{
 
     try {
