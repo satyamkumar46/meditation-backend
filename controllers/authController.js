@@ -15,6 +15,21 @@ export const sendOtp = async (req, res) => {
     // Expiry (5 minutes)
     const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
 
+    // Send Email via Resend
+    await resend.emails.send({
+        from: 'onboarding@resend.dev',
+        to: email,
+        subject: 'Your OTP Code',
+        html: `
+          <h2>Password Reset OTP</h2>
+          <p>Your OTP is:</p>
+          <h1>${otp}</h1>
+          <p>This OTP will expire in 5 minutes.</p>
+        `,
+      });
+  
+      res.json({ message: "OTP sent successfully 📧" });
+
     // Save OTP in Supabase
     const { error: dbError } = await supabase
       .from('otp_table')
@@ -25,23 +40,11 @@ export const sendOtp = async (req, res) => {
       });
 
     if (dbError) {
+        console.log("db error",dbError);
       return res.status(500).json({ error: dbError.message });
     }
 
-    // Send Email via Resend
-    await resend.emails.send({
-      from: 'onboarding@resend.dev',
-      to: email,
-      subject: 'Your OTP Code',
-      html: `
-        <h2>Password Reset OTP</h2>
-        <p>Your OTP is:</p>
-        <h1>${otp}</h1>
-        <p>This OTP will expire in 5 minutes.</p>
-      `,
-    });
-
-    res.json({ message: "OTP sent successfully 📧" });
+    
 
   } catch (error) {
     res.status(500).json({ error: error.message });
