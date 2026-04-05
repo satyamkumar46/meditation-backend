@@ -1,4 +1,4 @@
-import { Resend } from '../config/resend.js';
+import { resend } from '../config/resend.js';
 import { supabase } from '../config/supabase.js';
 
 export const sendOtp = async (req, res) => {
@@ -27,8 +27,6 @@ export const sendOtp = async (req, res) => {
     if (dbError) {
       return res.status(500).json({ error: dbError.message });
     }
-
-    const resend = new Resend('re_S69dRmFy_AvTHB378eMDbEiveH772FHjy');
 
     // Send Email via Resend
     await resend.emails.send({
