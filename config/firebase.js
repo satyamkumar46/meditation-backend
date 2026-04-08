@@ -1,9 +1,8 @@
 import admin from "firebase-admin";
-import fs from 'fs'
 
-const serviceAccount=JSON.parse(
-    fs.readFileSync(new URL('../serviceAccountKey.json', import.meta.url))
-);
+const serviceAccount=JSON.parse(process.env.FIREBASE_CONFIG);
+
+serviceAccount.private_key=serviceAccount.private_key.replace(/\\n/g, '\n');
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
