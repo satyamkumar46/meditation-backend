@@ -7,20 +7,28 @@ export const googleAuth= async (req, res) =>{
 
     try {
         // get token from frontend
-        const token = req.headers.authorization.split('Bearer ')[1];
-        console.log(req.headers.authorization);
-
-        if (!token) {
-            return res.status(401).json({ message: 'No token provided' });
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return res.status(401).json({ message: "No token provided" });
         }
+        
+        const token = authHeader.split("Bearer ")[1];
+        
 
         // verify firebase token
         const decoded= await admin.auth().verifyIdToken(token);
 
-        const {email, name, picture, uid}= decoded;
+        const name = decoded.name || decoded.email.split("@")[0];
+        const email = decoded.email;
+        const picture = decoded.picture || "";
+       const uid = decoded.uid;
+
+       if (!email) {
+        return res.status(400).json({ message: "Email not found" });
+      }
 
         // Check if user exists
-        let user= await User.findOne({email});
+        let user= await User.findOne({firebaseUid:uid});
 
         let isNewUser=false;
 
@@ -31,12 +39,22 @@ export const googleAuth= async (req, res) =>{
                 email,
                 photo:picture,
                 firebaseUid:uid,
+                bio: "",
+                session: 0,
+                streak: 0,
+                following: 0,
+                minutes: 0,
             });
             isNewUser=true;
         }
+        else{
+            user.name = name;
+            user.photo = picture;
+            await user.save();
+        }
 
         const appToken= jwt.sign(
-            {id: user._id},
+            {id: user._id, email: user.email},
             process.env.JWT_SECRET,
             {expiresIn:'7d'}
         );
@@ -50,6 +68,6 @@ export const googleAuth= async (req, res) =>{
 
 
     } catch (error) {
-        res.status(401).json({ error: 'Unauthorized' });
+        return res.status(500).json({ message: "Server error" });
     }
 }
