@@ -7,21 +7,38 @@ import connectDB from "./config/db.js";
 import soundRoutes from "./routes/soundRoutes.js";
 import TeacherRoutes from "./routes/TeacherRoutes.js"
 import authRoutes from "./routes/authRoutes.js"
+import rateLimit from 'express-rate-limit';
+import helmet from 'helmet';
+import morgan from 'morgan';
 
 connectDB();
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin:true
+}));
 app.use(express.json());
 
 app.get("/", (req, res) => {
   res.send("API is running 🚀");
 });
 
+const limiter= rateLimit({
+  windowMs:15*60*1000,
+  max:100,
+});
+
+
+app.use(morgan("dev"));
+app.use(helmet());
+app.use(limiter);
+
 app.use("/sounds", soundRoutes);
 app.use("/teachers", TeacherRoutes);
 app.use("/auth", authRoutes);
+
+
 
 const PORT= process.env.PORT || 3000;
 

@@ -19,9 +19,12 @@ router.post("/follow/:id", authMiddleware, async(req,res)=>{
             return res.status(400).json({ message: "You can't follow yourself" });
         }
 
-        currentUser.following+=1;
+        if(!currentUser.followingList.some(id => id.toString() === userToFollow._id.toString())){
+            currentUser.followingList.push(userToFollow._id);
+            currentUser.following = currentUser.followingList.length;
 
-        await currentUser.save();
+            await currentUser.save();
+        }
 
         res.json({success: true});
     } catch (error) {

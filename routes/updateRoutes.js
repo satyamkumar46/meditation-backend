@@ -24,11 +24,6 @@ router.put("/update", authMiddleware ,async(req, res) =>{
 
         await user.save();
 
-        await Session.create({
-            user:user._id,
-            minutes,
-        });
-
         res.json({
             success:true,
             user,
@@ -45,7 +40,11 @@ router.post("/session", authMiddleware, async(req,res) =>{
         
         const {minutes}= req.body;
 
-        const user= User.findById(req.user.id);
+        if (!minutes || minutes <= 0) {
+            return res.status(400).json({ message: "Invalid minutes" });
+        }
+
+        const user= await User.findById(req.user.id);
 
         if(!user){
             return res.status(404).json({ message: "User not found" });
@@ -76,6 +75,11 @@ router.post("/session", authMiddleware, async(req,res) =>{
         }
 
         user.lastSessionDate= new Date();
+
+        await Session.create({
+            user: user._id,
+            minutes,
+        });
 
         await user.save();
 

@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
+import BlackList from "../models/BlackList";
 
-const authMiddleware = (req, res, next) => {
+const authMiddleware = async (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -8,6 +9,12 @@ const authMiddleware = (req, res, next) => {
   }
 
   const token = authHeader.split("Bearer ")[1];
+
+  const isBlackListed= await BlackList.findOne({token});
+
+  if (isBlackListed) {
+    return res.status(401).json({ message: "Token expired" });
+  }
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);

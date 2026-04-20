@@ -18,10 +18,11 @@ const userSchema = new mongoose.Schema({
     streak: { type: Number, default: 0 },
     following: { type: Number, default: 0 },
     minutes: { type: Number, default: 0 },
-    firebaseUid: { type: String, required: true, unique: true },
+    firebaseUid: { type: String, unique: true, sparse: true },
     followingList: [
         { type: mongoose.Schema.Types.ObjectId, ref: "User" }
     ],
+    password:{type:String, required:false},
 },{timestamps:true});
 
 export default mongoose.model('User',userSchema);
