@@ -14,10 +14,14 @@ const userSchema = new mongoose.Schema({
     photo: { type: String, default: "" },
     bio: { type: String, default: "" },
     session: { type: Number, default: 0 },
+    lastSessionDate: { type: Date, default: null },
     streak: { type: Number, default: 0 },
     following: { type: Number, default: 0 },
     minutes: { type: Number, default: 0 },
     firebaseUid: { type: String, required: true, unique: true },
+    followingList: [
+        { type: mongoose.Schema.Types.ObjectId, ref: "User" }
+    ],
 },{timestamps:true});
 
 export default mongoose.model('User',userSchema);
