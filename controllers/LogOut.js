@@ -1,4 +1,4 @@
-import BlackList from "../models/BlackList";
+import Blacklist from "../models/BlackList.js";
 import jwt from "jsonwebtoken";
 
 export const logout = async (req, res) => {
@@ -13,7 +13,7 @@ export const logout = async (req, res) => {
         return res.status(400).json({ message: "Invalid token" });
     }
 
-    await BlackList.create({
+    await Blacklist.create({
       token,
       expiresAt: new Date(decoded.exp * 1000)
     });

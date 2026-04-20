@@ -5,4 +5,4 @@ const blacklistSchema = new mongoose.Schema({
   expiresAt: Date
 });
 
-export default mongoose.model("BlackList", blacklistSchema);
+export default mongoose.model("Blacklist", blacklistSchema);
