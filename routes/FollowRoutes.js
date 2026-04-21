@@ -30,4 +30,6 @@ router.post("/follow/:id", authMiddleware, async(req,res)=>{
     } catch (error) {
         return res.status(500).json({ message: "Server error" });
     }
-})
+});
+
+export default router;
