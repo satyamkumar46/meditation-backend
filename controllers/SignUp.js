@@ -5,8 +5,9 @@ import jwt from "jsonwebtoken";
 export const signup = async (req, res) =>{
 
     try {
+
         
-        const {name, email, password} = req.body;
+        const {name, email, password, firebaseUid} = req.body;
 
         if (!name || !email || !password) {
             return res.status(400).json({ message: "All fields required" });
@@ -32,12 +33,10 @@ export const signup = async (req, res) =>{
             name,
             email,
             password: hashedPassword,
-            bio: "",
-            session: 0,
-            streak: 0,
-            following: 0,
-            minutes: 0,
+            firebaseUid: firebaseUid || undefined,
         });
+
+      
 
         const token= jwt.sign(
             {id:user._id, email:user.email},
@@ -54,6 +53,7 @@ export const signup = async (req, res) =>{
         });
 
     } catch (error) {
+     
         res.status(500).json({ message: "Server error" });
     }
 }

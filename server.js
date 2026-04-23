@@ -43,7 +43,6 @@ app.use("/user", FollowRoutes);
 app.use("/user", updateRoutes);
 
 
-
 const PORT= process.env.PORT || 3000;
 
 app.listen(PORT, () => {

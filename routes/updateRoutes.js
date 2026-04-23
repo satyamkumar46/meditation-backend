@@ -15,9 +15,18 @@ router.put("/update", authMiddleware, async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    if (name) user.name = name;
-    if (bio) user.bio = bio;
-    if (photo) user.photo = photo;
+    if (name !== undefined && name.trim() !== "") {
+        user.name = name;
+    }
+  
+    if (bio !== undefined && bio.trim() !== "") {
+        user.bio = bio.toUpperCase();
+    }
+  
+    if (photo !== undefined) {
+        user.photo = photo;
+    }
+  
 
     await user.save();
 
@@ -110,7 +119,10 @@ router.get("/history", authMiddleware, async (req, res) => {
 });
 
 router.get("/stats", authMiddleware, async (req, res) => {
-    const user = await User.findById(req.user.id);
+
+    try {
+        
+        const user = await User.findById(req.user.id);
   
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -122,6 +134,11 @@ router.get("/stats", authMiddleware, async (req, res) => {
       minutes: user.minutes,
       lastSessionDate: user.lastSessionDate,
     });
+
+    } catch (error) {
+        return res.status(500).json({ message: "Server error" });
+    }
+    
 });
 
 export default router;
