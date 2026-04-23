@@ -9,14 +9,18 @@ import { login } from '../controllers/Login.js';
 const router = express.Router();
 
 router.post('/firebase', googleAuth);
-router.get('/me', authMiddleware, async(req, res) =>{
+router.get('/profile', authMiddleware, async(req, res) =>{
     
     try {
         const user= await User.findById(req.user.id).select("-password");
         if(!user){
             return res.status(404).json({ message: "User not found" });
         }
-        res.json(user);
+
+        res.json({
+            success:true,
+            user,
+        });
     } catch (error) {
         return res.status(500).json({ message: "Server error" });
     }
