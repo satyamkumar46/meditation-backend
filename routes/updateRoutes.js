@@ -2,42 +2,10 @@ import express from "express";
 import authMiddleware from "../middleware/authMiddleware.js";
 import User from "../models/User.js";
 import Session from "../models/Session.js";
+import { toggleFollow, updateProfile } from "../controllers/userController.js";
+import upload from "../middleware/upload.js";
 
 const router = express.Router();
-
-router.put("/update", authMiddleware, async (req, res) => {
-  try {
-    const { name, bio, photo } = req.body;
-
-    const user = await User.findById(req.user.id);
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    if (name !== undefined && name.trim() !== "") {
-        user.name = name;
-    }
-  
-    if (bio !== undefined && bio.trim() !== "") {
-        user.bio = bio.toUpperCase();
-    }
-  
-    if (photo !== undefined) {
-        user.photo = photo;
-    }
-  
-
-    await user.save();
-
-    res.json({
-      success: true,
-      user,
-    });
-  } catch (error) {
-    return res.status(500).json({ message: "Server error" });
-  }
-});
 
 router.post("/session", authMiddleware, async (req, res) => {
   try {
@@ -140,5 +108,8 @@ router.get("/stats", authMiddleware, async (req, res) => {
     }
     
 });
+
+router.put("/update-profile", authMiddleware,upload.single("photo"),updateProfile);
+router.post("/toggle-follow", authMiddleware, toggleFollow);
 
 export default router;
