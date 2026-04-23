@@ -26,7 +26,12 @@ export const updateProfile = async(req, res) =>{
 
                 new Promise((resolve, reject) =>{
                     const stream= cloudinary.uploader.upload_stream(
-                        {folder:"profile_image"},
+                        {folder:"profile_image",
+                            transformation:[
+                                { width: 500, height: 500, crop: "fill" },
+                                { quality: "auto" },
+                            ],
+                        },
                      (error, result) =>{
                         if(result) resolve(result);
                         else reject(error);
