@@ -24,7 +24,7 @@ export const updateProfile = async(req, res) =>{
 
             const streamUpload= async (buffer) =>{
 
-                new Promise((resolve, reject) =>{
+                return new Promise((resolve, reject) =>{
                     const stream= cloudinary.uploader.upload_stream(
                         {folder:"profile_image",
                             transformation:[
@@ -39,11 +39,10 @@ export const updateProfile = async(req, res) =>{
                     );
                     streamifier.createReadStream(buffer).pipe(stream);
                 });
-
-                const result= await streamUpload(file.buffer);
-
-                user.photo= result.secure_url;
             }
+            const result= await streamUpload(file.buffer);
+
+            user.photo= result.secure_url;
         }
     
         if (name && name.trim() !== "") {
