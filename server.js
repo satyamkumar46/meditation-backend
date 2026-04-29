@@ -9,6 +9,7 @@ import TeacherRoutes from "./routes/TeacherRoutes.js"
 import authRoutes from "./routes/authRoutes.js"
 import updateRoutes from "./routes/updateRoutes.js"
 import FollowRoutes from "./routes/FollowRoutes.js"
+import agentRoutes from './routes/agentRoutes.js'
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import morgan from 'morgan';
@@ -41,7 +42,7 @@ app.use("/teachers", TeacherRoutes);
 app.use("/auth", authRoutes);
 app.use("/user", FollowRoutes);
 app.use("/user", updateRoutes);
-
+app.use("/api", agentRoutes);
 
 const PORT= process.env.PORT || 3000;
 
